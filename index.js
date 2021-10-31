@@ -38,7 +38,6 @@ app.use(expressSeesion({
     maxAge : 24 * 60 *60 *1000,
 }));
 
-app.use(csrf());
 
 app.get('/',(req,res) => {
     res.render('index.ejs');
@@ -47,6 +46,10 @@ app.get('/',(req,res) => {
 app.get('/multiple',(req,res) => {
     res.render('multiple.ejs');
 });
+
+app.post('/upload', (req, res) => {
+    res.send("csrf verified");
+})
 
 const PORT = process.env.PORT || 8000;
 
