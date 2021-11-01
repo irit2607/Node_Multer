@@ -8,13 +8,14 @@ const app = express();
 
 app.set('veiw engine', 'ejs');
 app.set('veiws',__dirname + '/veiws');
+app.use(express.urlencoded({ extended : true}));
 
 //multer
 
 const storage = multer.diskStorage({
     destination : '/public/uploads',
     filename: function(req,file,callback){
-        callback(null, 'file', + Date.now() + path.extension(file,originalname));
+        callback(null, 'file' + Date.now() + path.extname(file.originalname));
     }
 });
 
@@ -48,7 +49,16 @@ app.get('/multiple',(req,res) => {
 });
 
 app.post('/upload', (req, res) => {
-    res.send("csrf verified");
+    console.log(req.body);
+    upload.single('file')(req,res,(err) => {
+        if(err)
+        {
+            res.render('index', {err:err});
+        }else{
+            console.log(req.body);
+            res.redirect("/");
+        }
+    });
 })
 
 const PORT = process.env.PORT || 8000;
