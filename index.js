@@ -1,6 +1,6 @@
 const express = require('express');
-const csrf = require('csrf');
-var expressSeesion = require('express-session');
+const csrf = require('csurf');
+var expressSesion = require('express-session');
 const multer = require('multer');
 const path = require('path');
 
@@ -13,26 +13,26 @@ app.use(express.urlencoded({ extended : true}));
 //multer
 
 const storage = multer.diskStorage({
-    destination : '/public/uploads',
-    filename: function(req,file,callback){
-        callback(null, 'file' + Date.now() + path.extname(file.originalname));
+    destination : 'public/uploads' ,
+    filename: function(req,file,cb){
+        cb(null, 'file' + Date.now() + path.extname(file.originalname));
     }
 });
 
 const upload = multer({
     storage : storage,
-    fileFilter : function(req, file, callback){
+    fileFilter : function (req, file, cb){
         var validextensions = ['.png' , '.jpg', '.jpeg'];
         var ext = path.extname(file.originalname);
-        if(! validextensions.includes(ext)){
-            return callback(new Error("Please choose .png, .jpg or .jpeg files!"));
+        if(!validextensions.includes(ext)){
+            return cb(new Error("Please choose .png, .jpg or .jpeg files!"));
         }
-        callback(null,true);  // error - null , file - true
+        cb(null,true);  // error - null , file - true
     },
     limits : {fileSize:125000 * 10},
 });
 
-app.use(expressSeesion({
+app.use(expressSesion({
     secret : 'random',
     resave : true,
     saveUninitialized:true,
@@ -59,7 +59,7 @@ app.post('/upload', (req, res) => {
             res.redirect("/");
         }
     });
-})
+});
 
 const PORT = process.env.PORT || 8000;
 
