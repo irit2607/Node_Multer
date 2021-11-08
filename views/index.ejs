@@ -57,5 +57,14 @@
       </form>
 </div>
 
+<h3>Our Uploaded Images</h3>
+<div class="container">
+  <% if(typeof data != 'undefined'){ %>
+     <% data.forEach(function(d, index){ %>
+        <img src= "<%= d.fileUrl %>" alt=" ">
+      <% }) %>
+    <% } %>
+</div>
+
 </body>
 </html>

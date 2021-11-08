@@ -3,9 +3,10 @@ const csrf = require('csurf');
 var expressSesion = require('express-session');
 const multer = require('multer');
 const path = require('path');
+const { execArgv } = require('process');
 
 const app = express();
-
+app.set('public/uploads',express.static(__dirname + 'public/uploads'));
 app.set('veiw engine', 'ejs');
 app.set('veiws',__dirname + '/veiws');
 app.use(express.urlencoded({ extended : true}));
@@ -41,7 +42,10 @@ app.use(expressSesion({
 
 
 app.get('/',(req,res) => {
-    res.render('index.ejs');
+    var data =[
+        {'fileUrl' : 'public/uploads/file1636368474413.jpeg',}
+    ];
+    res.render('index.ejs', {data : data});
 });
 
 app.get('/multiple',(req,res) => {
@@ -60,6 +64,17 @@ app.post('/upload', (req, res) => {
         }
     });
 });
+
+app.post('/multiple', (req,res) => {
+    upload.array('file',5)(req,res, (err) => {
+        if(err) {
+            res.render('multiple',{err : err});
+        }
+        else{
+            res.redirect("/");
+        }
+    })
+})
 
 const PORT = process.env.PORT || 8000;
 
